@@ -12,12 +12,12 @@ public class FollowCam : MonoBehaviour
     public Vector2 minXY = Vector2.zero;
 
     [Header("Set Dynamically")]
-    public float camZ;
+    public Vector3 initPos;
     public float initSize;
 
     private void Awake()
     {
-        camZ = this.transform.position.z;
+        initPos = this.transform.position;
         initSize = Mathf.Abs(ground.transform.position.y);
         Camera.main.orthographicSize = initSize; 
     }
@@ -39,8 +39,9 @@ public class FollowCam : MonoBehaviour
         destination.x = Mathf.Max(minXY.x, destination.x);
         destination.y = Mathf.Max(minXY.y, destination.y);
         destination = Vector3.Lerp(transform.position, destination, easing);
-        destination.z = camZ;
-       transform.position = destination;
+        destination.z = initPos.z;
+
+        transform.position = destination;
         Camera.main.orthographicSize = destination.y + initSize;
     }
 
@@ -48,5 +49,10 @@ public class FollowCam : MonoBehaviour
     void Update()
     {
         
+    }
+
+    static bool NearByZero(Vector3 vector)
+    {
+        return vector.magnitude < 0.0001f;
     }
 }
