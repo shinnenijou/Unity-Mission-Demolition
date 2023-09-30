@@ -15,6 +15,7 @@ public class Slingshot : MonoBehaviour
     public Vector3 launchPos;
     public GameObject projectile;
     public bool aimingMode;
+    public bool isAllowAiming;
 
     private Rigidbody projectileRigidbody;
     private float maxMagnitude;
@@ -32,6 +33,9 @@ public class Slingshot : MonoBehaviour
         launchPoint.SetActive(false);
         launchPos = launchPoint.transform.position;
         maxMagnitude = this.GetComponent<SphereCollider>().radius;
+
+        aimingMode = false;
+        isAllowAiming = true;
     }
 
     static public Vector3 LAUNCH_POS { 
@@ -77,6 +81,7 @@ public class Slingshot : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             aimingMode = false;
+            isAllowAiming = false;
             projectileRigidbody.isKinematic = false;
             projectileRigidbody.velocity = -mouseDelta * velocityMult;
             FollowCam.POI = projectile;
@@ -89,7 +94,7 @@ public class Slingshot : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (FollowCam.POI != null)
+        if (!isAllowAiming)
         {
             return;
         }
@@ -99,7 +104,7 @@ public class Slingshot : MonoBehaviour
 
     private void OnMouseExit()
     {
-        if (FollowCam.POI != null)
+        if (!isAllowAiming)
         {
             return;
         }
@@ -114,7 +119,7 @@ public class Slingshot : MonoBehaviour
             return;
         }
 
-        if (FollowCam.POI != null)
+        if (!isAllowAiming)
         {
             return;
         }

@@ -74,6 +74,7 @@ public class MissionDemolition : MonoBehaviour
         ProjectileLine.S.Clear();
 
         Goal.goalMet = false;
+        Slingshot.instance.isAllowAiming = true;
 
         UpdateGUI();
 
@@ -123,7 +124,7 @@ public class MissionDemolition : MonoBehaviour
         switch (showing)
         {
             case SHOW_SLINGSHOT:
-                FollowCam.POI = null;
+                FollowCam.POI = GameObject.Find("ViewSlingshot");
                 uitButton.text = SHOW_CASTLE;
                 break;
             case SHOW_CASTLE:

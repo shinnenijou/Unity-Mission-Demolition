@@ -19,7 +19,10 @@ public class FollowCam : MonoBehaviour
     {
         initPos = this.transform.position;
         initSize = Mathf.Abs(ground.transform.position.y);
-        Camera.main.orthographicSize = initSize; 
+        Camera.main.orthographicSize = initSize;
+
+        GameObject viewSlingshot = GameObject.Find("ViewSlingshot");
+        POI = viewSlingshot;
     }
 
     // Start is called before the first frame update
@@ -32,21 +35,14 @@ public class FollowCam : MonoBehaviour
     {
         Vector3 destination;
 
-        if (POI == null)
-        {
-            destination = Vector3.zero;
-        }
-        else
-        {
-            destination = POI.transform.position;
+        destination = POI.transform.position;
 
-            if (POI.tag == "Projectile")
+        if (POI.tag == "Projectile")
+        {
+            if (POI.GetComponent<Rigidbody>().IsSleeping())
             {
-                if (POI.GetComponent<Rigidbody>().IsSleeping())
-                {
-                    POI = null;
-                    return;
-                }
+                Reset();
+                return;
             }
         }
 
@@ -59,14 +55,10 @@ public class FollowCam : MonoBehaviour
         Camera.main.orthographicSize = destination.y + initSize;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Reset()
     {
-        
-    }
-
-    static bool NearByZero(Vector3 vector)
-    {
-        return vector.magnitude < 0.0001f;
+        GameObject viewSlingshot = GameObject.Find("ViewSlingshot");
+        POI = viewSlingshot;
+        Slingshot.instance.isAllowAiming = true;
     }
 }
