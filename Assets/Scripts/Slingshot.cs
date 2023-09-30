@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Slingshot : MonoBehaviour
 {
+    static public Slingshot instance;
+
     [Header("Set in Inspector")]
     public GameObject prefabProjectile;
     public float velocityMult = 8f;
@@ -19,11 +21,29 @@ public class Slingshot : MonoBehaviour
 
     private void Awake()
     {
+        if (instance != null)
+        {
+            return;
+        }
+
+        instance = this;
         Transform launchPointTrans = transform.Find("LaunchPoint");
         launchPoint = launchPointTrans.gameObject;
         launchPoint.SetActive(false);
         launchPos = launchPoint.transform.position;
         maxMagnitude = this.GetComponent<SphereCollider>().radius;
+    }
+
+    static public Vector3 LAUNCH_POS { 
+        get 
+        {
+            if (instance == null)
+            {
+                return Vector3.zero;
+            }
+
+            return instance.launchPos;
+        }
     }
 
     // Start is called before the first frame update
@@ -61,22 +81,40 @@ public class Slingshot : MonoBehaviour
             projectileRigidbody.velocity = -mouseDelta * velocityMult;
             FollowCam.POI = projectile;
             projectile = null;
+            MissionDemolition.ShotFired();
+            ProjectileLine.S.poi = projectile;
+            launchPoint.SetActive(false);
         }
     }
 
     private void OnMouseEnter()
     {
+        if (FollowCam.POI != null)
+        {
+            return;
+        }
+
         launchPoint.SetActive(true);
     }
 
     private void OnMouseExit()
     {
+        if (FollowCam.POI != null)
+        {
+            return;
+        }
+
         launchPoint.SetActive(false);
     }
 
     private void OnMouseDown()
     {
         if (aimingMode)
+        {
+            return;
+        }
+
+        if (FollowCam.POI != null)
         {
             return;
         }
